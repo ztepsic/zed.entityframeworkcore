@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Zed.EntityFrameworkCore.Tests.Model {
-    public class TagMapping : IEntityTypeConfiguration<Tag> {
-        public void Configure(EntityTypeBuilder<Tag> builder) {
+namespace Zed.EntityFrameworkCore.Tests.Model
+{
+    public class TagMapping : IEntityTypeConfiguration<Tag>
+    {
+        public void Configure(EntityTypeBuilder<Tag> builder)
+        {
             builder.ToTable("Tags")
                   .HasKey(t => t.Id);
 
@@ -17,6 +20,9 @@ namespace Zed.EntityFrameworkCore.Tests.Model {
             builder.Property(x => x.Slug)
                 .HasField("slug")
                 .IsRequired();
+
+            builder.Property<int?>("BaseTagId")
+                .IsRequired(false);
 
             builder.HasOne(x => x.BaseTag)
                 .WithMany()

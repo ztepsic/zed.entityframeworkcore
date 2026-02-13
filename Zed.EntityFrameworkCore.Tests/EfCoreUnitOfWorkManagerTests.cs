@@ -1,10 +1,18 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Zed.EntityFrameworkCore.Test;
+using Zed.EntityFrameworkCore.Tests.InitDb;
 using Zed.EntityFrameworkCore.Tests.Model;
-using Zed.EntityFrameworkCore.Tests.Test;
 
 namespace Zed.EntityFrameworkCore.Tests {
-    public class EfCoreUnitOfWorkManagerTests : SqliteEfCoreTestFixture {
+    [TestFixtureSource(nameof(FixtureSources))]
+    public class EfCoreUnitOfWorkManagerTests : BaseConsolidatedTest {
+        public EfCoreUnitOfWorkManagerTests(Func<EfCoreTestFixture> fixtureFactory) : base(fixtureFactory) {
+        }
+
+        public static IEnumerable<TestFixtureData> FixtureSources() => GetFixtureSources();
 
         [Test]
         public void Start_NestedScopeRollbackThenRootCommit_BothChangesArePersisted() {
@@ -28,8 +36,8 @@ namespace Zed.EntityFrameworkCore.Tests {
             }
 
             using (var unitOfWorkRootScope = unitOfWork.Start()) {
-                result1 = TestDbContext.Tags.Find(1);
-                result2 = TestDbContext.Tags.Find(2);
+                result1 = TestDbContext.Tags.Find(1)!;
+                result2 = TestDbContext.Tags.Find(2)!;
             }
 
 
@@ -67,8 +75,8 @@ namespace Zed.EntityFrameworkCore.Tests {
             }
 
             using (var unitOfWork = await unitOfWorkManager.StartAsync()) {
-                result1 = TestDbContext.Tags.Find(1);
-                result2 = TestDbContext.Tags.Find(2);
+                result1 = TestDbContext.Tags.Find(1)!;
+                result2 = TestDbContext.Tags.Find(2)!;
             }
 
 
@@ -98,13 +106,13 @@ namespace Zed.EntityFrameworkCore.Tests {
                 await unitOfWork.CommitAsync();
 
                 TestDbContext.Add(tag2);
-                unitOfWork.RollbackAsync();
+                await unitOfWork.RollbackAsync();
 
             }
 
             using (var unitOfWork = unitOfWorkManager.Start()) {
-                result1 = TestDbContext.Tags.Find(1);
-                result2 = TestDbContext.Tags.Find(2);
+                result1 = TestDbContext.Tags.Find(1)!;
+                result2 = TestDbContext.Tags.Find(2)!;
             }
 
             // Assert

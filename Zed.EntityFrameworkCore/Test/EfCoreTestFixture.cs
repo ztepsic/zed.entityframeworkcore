@@ -1,17 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-namespace Zed.EntityFrameworkCore.Test {
+namespace Zed.EntityFrameworkCore.Test
+{
     /// <summary>
     /// Entity Framework Core nUnit fixture
     /// </summary>
-    public abstract class EfCoreTestFixture {
+    public abstract class EfCoreTestFixture
+    {
 
         #region Fields and Properties
 
         /// <summary>
         /// DbContext
         /// </summary>
-        protected DbContext DbContext { get; private set; }
+        public DbContext DbContext { get; private set; }
 
         #endregion
 
@@ -28,6 +31,24 @@ namespace Zed.EntityFrameworkCore.Test {
         #region Methods
 
         /// <summary>
+        /// On fixture setup (async version for compatibility)
+        /// </summary>
+        public virtual Task OnFixtureSetupAsync()
+        {
+            OnFixtureSetup();
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// On fixture tear down (async version for compatibility)
+        /// </summary>
+        public virtual Task OnFixtureTeardownAsync()
+        {
+            OnFixtureTeardown();
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// On fixture setup
         /// </summary>
         protected virtual void OnFixtureSetup() { }
@@ -40,17 +61,18 @@ namespace Zed.EntityFrameworkCore.Test {
         /// <summary>
         /// On Setup
         /// </summary>
-        protected virtual void OnSetup() { SetupDbContext(); }
+        public virtual void OnSetup() { SetupDbContext(); }
 
         /// <summary>
         /// On Teardown
         /// </summary>
-        protected virtual void OnTeardown() { TearDownDbContext(); }
+        public virtual void OnTeardown() { TearDownDbContext(); }
 
         /// <summary>
         /// Setup DbContext
         /// </summary>
-        protected virtual void SetupDbContext() {
+        protected virtual void SetupDbContext()
+        {
             DbContext = CreateDbContext();
             BuildSchema();
         }
@@ -58,7 +80,8 @@ namespace Zed.EntityFrameworkCore.Test {
         /// <summary>
         /// Tear down DbContext
         /// </summary>
-        protected virtual void TearDownDbContext() {
+        protected virtual void TearDownDbContext()
+        {
             DbContext?.Dispose();
             DbContext = null;
         }
@@ -66,7 +89,8 @@ namespace Zed.EntityFrameworkCore.Test {
         /// <summary>
         /// Builds the database schema
         /// </summary>
-        protected virtual void BuildSchema() {
+        protected virtual void BuildSchema()
+        {
             DbContext.Database.EnsureCreated();
         }
 

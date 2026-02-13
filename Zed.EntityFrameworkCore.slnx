@@ -2,6 +2,7 @@
  <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
 	<File Path="Directory.Packages.props" />
+	<File Path="nuget.config" />
   </Folder>
   <Project Path="Zed.EntityFrameworkCore.Tests/Zed.EntityFrameworkCore.Tests.csproj" />
   <Project Path="Zed.EntityFrameworkCore/Zed.EntityFrameworkCore.csproj" />

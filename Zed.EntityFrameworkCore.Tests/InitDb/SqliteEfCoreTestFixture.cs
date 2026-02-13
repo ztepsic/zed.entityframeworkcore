@@ -5,7 +5,7 @@ using System.Data.Common;
 using Zed.EntityFrameworkCore.Test;
 using Zed.EntityFrameworkCore.Tests.Model;
 
-namespace Zed.EntityFrameworkCore.Tests.Test {
+namespace Zed.EntityFrameworkCore.Tests.InitDb {
     [TestFixture]
     public class SqliteEfCoreTestFixture : EfCoreTestFixture {
 
@@ -34,10 +34,16 @@ namespace Zed.EntityFrameworkCore.Tests.Test {
         [SetUp]
         public void Setup() { OnSetup(); }
 
+        public override void OnTeardown() {
+            if (Connection != null) {
+                Connection.Close();
+                DbContext?.Database.EnsureDeleted();
+            }
+            base.OnTeardown();
+        }
+
         [TearDown]
         public void TearDown() {
-            Connection.Close();
-            DbContext.Database.EnsureDeleted();
             OnTeardown();
         }
 
